@@ -7,6 +7,7 @@ import DocbarAdmin from "./../components/common/Docbar.Admin";
 import TabAdminPost from "./../components/Tab.Admin.Post";
 import { useNavigate } from "react-router-dom";
 import { useAppContext } from "../context/useContext";
+import TabAdminReport from "../components/Tab.Admin.Report";
 
 const Admin = () => {
   const { isLogin } = useAppContext();
@@ -34,6 +35,8 @@ const Admin = () => {
           <TabAdminPost />
         ) : tab === "user" ? (
           <TabAdmiUser />
+        ) : tab === "report" ? (
+          <TabAdminReport />
         ) : (
           <TabAdminSatis convertDate={convertDate} />
         )}

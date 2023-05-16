@@ -23,7 +23,6 @@ const TabAdminPost = () => {
     "NO",
     "AVATAR",
     "NAME",
-
     "CONTENT",
     "IMAGE/VIDEO",
     "LIKE",
