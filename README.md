@@ -1,5 +1,3 @@
-![Logo](https://github.com/truongduy28/Social-media-Hello-World-website-REACT/blob/main/assets-for-git/logo.png?raw=true)
-
 # Hello World social media
 
 This is an social media project of how to work with the user interface, manipulate logic for the social media website
