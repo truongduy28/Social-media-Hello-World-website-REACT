@@ -28,6 +28,7 @@ import {
 import ModalEditPost from "./Modal.EditPost";
 import { FacebookShareButton } from "react-share";
 import { TiTick } from "react-icons/ti";
+import ScrollToTop from "./../middleware/ScrollToTop";
 
 const Post = ({ currentPost, userId, allPost }) => {
   const { posts, setPosts } = allPost;
@@ -53,6 +54,8 @@ const Post = ({ currentPost, userId, allPost }) => {
   const [profileOfSharedFeed, setProfileOfSharedFeed] = useState(null);
   const [isLoadingProfileOfSharedFeed, setIsLoadingProfileOfSharedFeed] =
     useState(false);
+
+  const [isLoadingShareFeed, setIsLoadingShareFeed] = useState(false);
 
   useEffect(() => {
     if (!post.isShare) return;
@@ -219,7 +222,6 @@ const Post = ({ currentPost, userId, allPost }) => {
   };
 
   const dropdownPostOptions = (post) => {
-    // if(userId)
     return (
       <>
         <div
@@ -227,6 +229,22 @@ const Post = ({ currentPost, userId, allPost }) => {
             isOpenOption ? " visible" : " invisible"
           } dark:bg-[#3A3B3C]  `}
         >
+          {!post.isShare && (
+            <div
+              className="border-y-[1px] px-2 dark:border-gray-700 "
+              onClick={() => handleShareToWall()}
+            >
+              <p className="flex items-center gap-2 text-gray-600 dark:text-[#e4e6eb]/80 hover:cursor-pointer ">
+                <span className="scale-x-[-1]">
+                  <BiShare />
+                </span>
+                <span className="false group flex rounded-md items-center w-full  py-2 text-sm font-semibold tracking-wide  ">
+                  Share to wall
+                </span>
+              </p>
+            </div>
+          )}
+
           <div className="border-y-[1px] px-2 dark:border-gray-700 ">
             <FacebookShareButton
               url={`${HOST}/post/${post._id}`}
@@ -243,35 +261,39 @@ const Post = ({ currentPost, userId, allPost }) => {
               </p>
             </FacebookShareButton>
           </div>
-          <div className="border-y-[1px] px-2 dark:border-gray-700 ">
-            <p
-              className="flex items-center gap-2 text-gray-600 dark:text-[#e4e6eb]/80 hover:cursor-pointer "
-              onClick={() => {
-                setOpenModalEditPost(true);
-                setisOpenOption(false);
-              }}
-            >
-              <span>
-                <AiOutlineSetting />
-              </span>
-              <span className="false group flex rounded-md items-center w-full  py-2 text-sm font-semibold tracking-wide  ">
-                Edit post
-              </span>
-            </p>
-          </div>
-          <div className="border-y-[1px] px-2 dark:border-gray-700 ">
-            <p
-              className="flex items-center gap-2 text-gray-600 dark:text-[#e4e6eb]/80 hover:cursor-pointer "
-              onClick={() => deletePost(post?._id)}
-            >
-              <span>
-                <AiOutlineDelete />
-              </span>
-              <span className="false group flex rounded-md items-center w-full  py-2 text-sm font-semibold tracking-wide  ">
-                Delete
-              </span>
-            </p>
-          </div>
+          {userId === post?.postedBy?._id && (
+            <div className="border-y-[1px] px-2 dark:border-gray-700 ">
+              <p
+                className="flex items-center gap-2 text-gray-600 dark:text-[#e4e6eb]/80 hover:cursor-pointer "
+                onClick={() => {
+                  setOpenModalEditPost(true);
+                  setisOpenOption(false);
+                }}
+              >
+                <span>
+                  <AiOutlineSetting />
+                </span>
+                <span className="false group flex rounded-md items-center w-full  py-2 text-sm font-semibold tracking-wide  ">
+                  Edit post
+                </span>
+              </p>
+            </div>
+          )}
+          {userId === post?.postedBy?._id || isLogin?.user?.role === "Admin" ? (
+            <div className="border-y-[1px] px-2 dark:border-gray-700 ">
+              <p
+                className="flex items-center gap-2 text-gray-600 dark:text-[#e4e6eb]/80 hover:cursor-pointer "
+                onClick={() => deletePost(post?._id)}
+              >
+                <span>
+                  <AiOutlineDelete />
+                </span>
+                <span className="false group flex rounded-md items-center w-full  py-2 text-sm font-semibold tracking-wide  ">
+                  Delete
+                </span>
+              </p>
+            </div>
+          ) : null}
         </div>
         <div
           className={`${
@@ -283,6 +305,23 @@ const Post = ({ currentPost, userId, allPost }) => {
     );
   };
 
+  const handleShareToWall = async () => {
+    setIsLoadingShareFeed(true);
+    try {
+      const { data } = await axios.post(`${APIURI}/posts/share-post`, {
+        postId: post._id,
+        userId: isLogin?.user?._id,
+      });
+      setPosts([data.post, ...posts]);
+
+      setIsLoadingShareFeed(false);
+    } catch (error) {
+      console.log(error);
+      setIsLoadingShareFeed(false);
+    }
+    window.scrollTo(0, 0);
+    setisOpenOption(false);
+  };
   return (
     post && (
       <>
@@ -310,17 +349,16 @@ const Post = ({ currentPost, userId, allPost }) => {
                 {post?.createdAt && moment(post?.createdAt).fromNow()}
               </span>
             </div>
-            {userId === post?.postedBy?._id && (
-              <div className="post__authur_control relative">
-                <span
-                  className="hover:bg-black cursor-pointer"
-                  onClick={() => setisOpenOption(true)}
-                >
-                  <BiDotsHorizontalRounded />
-                </span>
-                {dropdownPostOptions(post)}
-              </div>
-            )}
+
+            <div className="post__authur_control relative">
+              <span
+                className="hover:bg-black cursor-pointer"
+                onClick={() => setisOpenOption(true)}
+              >
+                <BiDotsHorizontalRounded />
+              </span>
+              {dropdownPostOptions(post)}
+            </div>
           </div>
           <div className="post__content">
             <div className="post__desc pt-2 px-4">
@@ -359,6 +397,11 @@ const Post = ({ currentPost, userId, allPost }) => {
                       {post?.isShare.createdAt &&
                         moment(post?.isShare.createdAt).fromNow()}
                     </span>
+                  </div>
+                </div>
+                <div className="post__content">
+                  <div className="post__desc pt-2 px-4">
+                    {post.isShare.content}
                   </div>
                 </div>
                 <div className="post__img mt-3 flex items-center justify-center px-2 cursor-pointer">
