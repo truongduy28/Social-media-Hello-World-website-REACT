@@ -23,6 +23,8 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 
+import { TiTick } from "react-icons/ti";
+
 const DetailPost = () => {
   const { isLogin } = useAppContext();
   const [imageCommentShow, setImageCommentShow] = useState(null);
@@ -43,6 +45,29 @@ const DetailPost = () => {
   const navigate = useNavigate();
   let likeCount = post?.likes?.length;
   let commentCount = post?.comments?.length;
+
+  const [profileOfSharedFeed, setProfileOfSharedFeed] = useState(null);
+  const [isLoadingProfileOfSharedFeed, setIsLoadingProfileOfSharedFeed] =
+    useState(false);
+
+  useEffect(() => {
+    if (!post) return;
+    if (!post.isShare) return;
+    const getProfile = async () => {
+      try {
+        setIsLoadingProfileOfSharedFeed(true);
+        const { data } = await axios.get(
+          `${APIURI}/users/${post.isShare.postedBy}`
+        );
+        setProfileOfSharedFeed(data.user);
+        setIsLoadingProfileOfSharedFeed(false);
+      } catch (error) {
+        console.log(error);
+        setIsLoadingProfileOfSharedFeed(false);
+      }
+    };
+    getProfile();
+  }, [post]);
 
   useEffect(() => {
     const getPost = async () => {
@@ -102,17 +127,10 @@ const DetailPost = () => {
         const storageRef = ref(storage, fileName);
         const uploadTask = uploadBytesResumable(storageRef, imageComment);
 
-        // Register three observers:
-        // 1. 'state_changed' observer, called any time the state changes
-        // 2. Error observer, called on failure
-        // 3. Completion observer, called on successful completion
         uploadTask.on(
           "state_changed",
           (snapshot) => {
-            // Observe state change events such as progress, pause, and resume
-            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
             setCommentLoading(true);
-
             const progress =
               (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
 
@@ -241,7 +259,64 @@ const DetailPost = () => {
                     </span>
                   </div>
                 </div>
-                <div class="my-5  text-[17px]  ">{post?.content}</div>
+                <div class="my-5  text-[17px]  ">
+                  <div className="post__desc pt-2 px-4">
+                    {post.isShare && profileOfSharedFeed ? (
+                      <p>
+                        {post?.content} of {profileOfSharedFeed.name}
+                      </p>
+                    ) : (
+                      <p>{post?.content.trim()}</p>
+                    )}
+                  </div>
+                  {post.isShare && profileOfSharedFeed ? (
+                    <div className=" py-2 shadow-post rounded-lg ">
+                      <div className="post__authur flex items-center pl-2 pr-3 sm:px-3 md:px-4">
+                        <div
+                          className="post__authur_avt"
+                          onClick={() =>
+                            navigate(`/profile/${profileOfSharedFeed?._id}`)
+                          }
+                        >
+                          <img
+                            className=" w-10 h-10 rounded-full object-cover cursor-pointer "
+                            src={profileOfSharedFeed?.image}
+                            alt=""
+                          />
+                        </div>
+                        <div className="post__authur_name flex-1 ml-2 text-gray-700 dark:text-[#e4e6ec]  ">
+                          <p className=" cursor-pointer font-semibold flex items-center gap-2">
+                            {profileOfSharedFeed?.name}
+                            {profileOfSharedFeed.role === "Admin" && (
+                              <TiTick className="text-[17px] text-white rounded-full bg-sky-500 " />
+                            )}
+                          </p>
+
+                          <span className="text-xs dark:text-[#b0b3b8]">
+                            {post?.isShare.createdAt &&
+                              moment(post?.isShare.createdAt).fromNow()}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="post__img mt-3 flex items-center justify-center px-2 cursor-pointer">
+                        {post?.isShare.image?.url &&
+                        post?.isShare.image?.isVideo ? (
+                          <video
+                            src={post?.isShare.image?.url}
+                            controls
+                            width="100%"
+                          ></video>
+                        ) : (
+                          <img
+                            src={post?.isShare.image?.url}
+                            alt=""
+                            className="w-full h-auto max-h-[300px] sm:max-h-[350px] object-contain bg-[#F0F2F5] dark:bg-[#18191A]'"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
                 <div className="post__interactive">
                   {/* post's comment and like quantity */}
                   {(commentCount > 0 || likeCount > 0) && (

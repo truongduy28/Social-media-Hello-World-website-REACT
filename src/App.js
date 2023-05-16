@@ -1,7 +1,7 @@
 // import logo from "./logo.svg";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import "./App.css";
-import { AppContextProvider, useAppContext } from "./context/useContext";
+import { useAppContext } from "./context/useContext";
 import ForgetPassword from "./page/ForgetPassword";
 import Home from "./page/Home";
 import Login from "./page/Login";
@@ -14,12 +14,8 @@ import UpdateProfile from "./page/UpdateProfile";
 import Messenger from "./page/Messenger";
 import DetailPost from "./page/Detail.Post";
 import { useRef } from "react";
-import ScrollToTop from "./middleware/ScrollToTop";
 import useScrollOutTop from "./middleware/useScrollOutTop";
 import { BiChevronUp } from "react-icons/bi";
-import { BsMoon, BsMoonFill, BsSun, BsSunFill } from "react-icons/bs";
-import { RiMoonClearFill } from "react-icons/ri";
-import { FaSun } from "react-icons/fa";
 import Admin from "./page/Admin";
 
 function App() {
