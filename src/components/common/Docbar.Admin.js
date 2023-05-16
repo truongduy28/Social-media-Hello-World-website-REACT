@@ -4,6 +4,7 @@ import React from "react";
 import { BsFilePost } from "react-icons/bs";
 import { FaUserCircle } from "react-icons/fa";
 import { ImStatsDots } from "react-icons/im";
+import { MdReport } from "react-icons/md";
 
 const DocbarAdmin = ({ control }) => {
   const { tab, setTab } = control;
@@ -27,6 +28,15 @@ const DocbarAdmin = ({ control }) => {
             <FaUserCircle />
           </span>
           <span>User</span>
+        </div>
+        <div
+          className="flex justify-center items-center flex-1 gap-2 dark:hover:bg-black py-2 rounded-md hover:scale-125 duration-300 hover:translate-y-[-6px] cursor-pointer"
+          onClick={() => setTab("report")}
+        >
+          <span>
+            <MdReport />
+          </span>
+          <span>Report</span>
         </div>
         <div
           className="flex justify-center items-center flex-1 gap-2 dark:hover:bg-black py-2 rounded-md hover:scale-125 duration-300 hover:translate-y-[-6px] cursor-pointer"
