@@ -89,8 +89,6 @@ const TabAdmiUser = () => {
                     </div>
                   )}
                 </td>
-
-                {/* <td className="py-4 px-2">{post?.image?.url}</td> */}
               </tr>
             ))}
           </tbody>
