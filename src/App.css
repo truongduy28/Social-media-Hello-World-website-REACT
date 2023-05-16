@@ -1,0 +1,69 @@
+img {
+    width: 100%;
+}
+
+.left {
+    position: fixed;
+    height: 80vh;
+    width: 25%;
+    top: 12%;
+    left: 3%;
+}
+
+.right {
+    position: fixed;
+    height: 80vh;
+    width: 25%;
+    top: 12%;
+    right: 3%;
+    /* background: green */
+}
+
+.center {
+    margin: 0 auto;
+    padding-top: 20px;
+}
+
+.item {
+    width: 100%;
+    height: 300px;
+    background: #000;
+    margin-bottom: 20px;
+}
+
+.content {
+    padding-top: 60px;
+}
+
+@media screen and (min-width: 768px) {
+    .content {
+        padding-top: 70px;
+    }
+}
+
+.image-photo {
+    aspect-ratio: 1 / 1;
+    /* ⏹ a perfect square */
+}
+
+.app-scrollbar {
+    float: left;
+    background: #aaaaaa70;
+    overflow-y: scroll;
+    /* margin-bottom: 25px; */
+}
+
+#app-scrollbar-style::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 3px rgba(81, 214, 255, 0.925);
+    background-color: #F5F5F5;
+}
+
+#app-scrollbar-style::-webkit-scrollbar {
+    width: 10px;
+    background-color: #F5F5F5;
+}
+
+#app-scrollbar-style::-webkit-scrollbar-thumb {
+    background-color: rgba(81, 214, 255, 0.925);
+    /* border: 2px solid #555555; */
+}
