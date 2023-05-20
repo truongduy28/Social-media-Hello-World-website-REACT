@@ -1,5 +1,5 @@
-const APIURI = "http://localhost:1800/api";
-// const APIURI = "https://mini-server.onrender.com/api";
+// const APIURI = "http://localhost:1800/api";
+const APIURI = "https://mini-server.onrender.com/api";
 
 const REACT_APP_SOCKET_IO_SERVER = "http://localhost:1800/";
 const KEY_WEATHER_SERVER = "220b162ef6574c97ac432326212612";
